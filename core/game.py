@@ -10,17 +10,22 @@ import sys
 import pygame
 
 from settings import (
-    SCREEN_WIDTH, SCREEN_HEIGHT, FPS,
-    DARK_PURPLE, YELLOW, WHITE,
-    ENEMY_ROW_TYPES, DIFFICULTY_PRESETS,
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    FPS,
+    DARK_PURPLE,
+    YELLOW,
+    WHITE,
+    ENEMY_ROW_TYPES,
+    DIFFICULTY_PRESETS,
 )
-from entities.player    import Player
-from entities.enemy     import Swarm
-from entities.effects   import spawn_hit_particles
-from ui.hud             import HUD
+from entities.player import Player
+from entities.enemy import Swarm
+from entities.effects import spawn_hit_particles
+from ui.hud import HUD
 
 # Состояния игры
-_STATE_PLAYING   = "playing"
+_STATE_PLAYING = "playing"
 _STATE_NEXT_WAVE = "next_wave"
 _STATE_GAME_OVER = "game_over"
 
@@ -34,32 +39,38 @@ class Game:
     run() блокирует выполнение и возвращает финальный счёт после Game Over.
     """
 
-    def __init__(self, screen: pygame.Surface, assets: dict, sounds: dict,
-                 stars: list, difficulty: str = "medium") -> None:
-        self._screen     = screen
-        self._assets     = assets
-        self._sounds     = sounds
-        self._stars      = stars
+    def __init__(
+        self,
+        screen: pygame.Surface,
+        assets: dict,
+        sounds: dict,
+        stars: list,
+        difficulty: str = "medium",
+    ) -> None:
+        self._screen = screen
+        self._assets = assets
+        self._sounds = sounds
+        self._stars = stars
         self._difficulty = difficulty
-        self._clock      = pygame.time.Clock()
+        self._clock = pygame.time.Clock()
 
         # Применяем пресет сложности — перекладываем в атрибут для передачи в Swarm
         self._preset = DIFFICULTY_PRESETS.get(difficulty, DIFFICULTY_PRESETS["medium"])
 
         self._hud = HUD(
             heart_empty=self._assets["hearts"]["empty"],
-            heart_half =self._assets["hearts"]["half"],
-            heart_full =self._assets["hearts"]["full"],
+            heart_half=self._assets["hearts"]["half"],
+            heart_full=self._assets["hearts"]["full"],
         )
         self._explosion_frames = self._assets["explosions"]
 
-        self._wave       = 1
-        self._state      = _STATE_PLAYING
+        self._wave = 1
+        self._state = _STATE_PLAYING
         self._wave_timer = 0.0
 
         self._setup_round(wave=1)
 
-    # Точка входа 
+    # Точка входа
 
     def run(self) -> int:
         """Запускает игровой цикл. Возвращает финальный счёт."""
@@ -82,14 +93,14 @@ class Game:
 
     def _setup_round(self, wave: int) -> None:
         """Создаёт спрайты и Swarm для новой волны, сохраняя прогресс игрока."""
-        self._wave           = wave
-        self._game_over_done = False   # флаг: game_over уже «показан», можно выходить
+        self._wave = wave
+        self._game_over_done = False  # флаг: game_over уже «показан», можно выходить
 
-        self._all_sprites    = pygame.sprite.Group()
-        self._enemy_group    = pygame.sprite.Group()
+        self._all_sprites = pygame.sprite.Group()
+        self._enemy_group = pygame.sprite.Group()
         self._player_bullets = pygame.sprite.Group()
-        self._enemy_bullets  = pygame.sprite.Group()
-        self._effects_group  = pygame.sprite.Group()
+        self._enemy_bullets = pygame.sprite.Group()
+        self._effects_group = pygame.sprite.Group()
 
         if wave == 1 or not hasattr(self, "_player_lives_carry"):
             self._player_lives_carry = None
@@ -113,14 +124,14 @@ class Game:
         }
 
         self._swarm = Swarm(
-            sprite_data      = sprite_data,
-            all_sprites      = self._all_sprites,
-            enemy_group      = self._enemy_group,
-            bullets_group    = self._enemy_bullets,
-            effects_group    = self._effects_group,
-            explosion_frames = self._explosion_frames,
-            wave             = wave,
-            preset           = self._preset,   # передаём пресет сложности
+            sprite_data=sprite_data,
+            all_sprites=self._all_sprites,
+            enemy_group=self._enemy_group,
+            bullets_group=self._enemy_bullets,
+            effects_group=self._effects_group,
+            explosion_frames=self._explosion_frames,
+            wave=wave,
+            preset=self._preset,  # передаём пресет сложности
         )
         self._state = _STATE_PLAYING
 
@@ -139,7 +150,7 @@ class Game:
                     self._game_over_done = True
         return None
 
-    #Логика обновления 
+    # Логика обновления
 
     def _update(self, dt: float) -> None:
         if self._state == _STATE_GAME_OVER:
@@ -195,11 +206,11 @@ class Game:
             self._state = _STATE_GAME_OVER
             return
         if self._swarm.all_dead:
-            self._state      = _STATE_NEXT_WAVE
+            self._state = _STATE_NEXT_WAVE
             self._wave_timer = _NEXT_WAVE_DELAY
             self._sounds["victory"].play()
 
-    # Отрисовка 
+    # Отрисовка
 
     def _draw(self) -> None:
         self._screen.fill(DARK_PURPLE)
@@ -232,13 +243,19 @@ class Game:
         self._screen.blit(overlay, (0, 0))
 
         font_big = pygame.font.SysFont("monospace", 56, bold=True)
-        font_sm  = pygame.font.SysFont("monospace", 22)
+        font_sm = pygame.font.SysFont("monospace", 22)
 
         title = font_big.render("GAME  OVER", True, (220, 30, 30))
-        sub   = font_sm.render("Enter — продолжить", True, WHITE)
+        sub = font_sm.render("Enter — продолжить", True, WHITE)
 
-        self._screen.blit(title, title.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 - 40))
-        self._screen.blit(sub,   sub.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 + 40))
+        self._screen.blit(
+            title,
+            title.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 - 40),
+        )
+        self._screen.blit(
+            sub,
+            sub.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 + 40),
+        )
 
     def _draw_next_wave_banner(self) -> None:
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
@@ -246,9 +263,15 @@ class Game:
         self._screen.blit(overlay, (0, 0))
 
         font_big = pygame.font.SysFont("monospace", 52, bold=True)
-        font_sm  = pygame.font.SysFont("monospace", 22)
-        title    = font_big.render(f"ВОЛНА  {self._wave + 1}", True, YELLOW)
-        sub      = font_sm.render("Приготовься...", True, WHITE)
+        font_sm = pygame.font.SysFont("monospace", 22)
+        title = font_big.render(f"ВОЛНА  {self._wave + 1}", True, YELLOW)
+        sub = font_sm.render("Приготовься...", True, WHITE)
 
-        self._screen.blit(title, title.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 - 30))
-        self._screen.blit(sub,   sub.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 + 40))
+        self._screen.blit(
+            title,
+            title.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 - 30),
+        )
+        self._screen.blit(
+            sub,
+            sub.get_rect(centerx=SCREEN_WIDTH // 2, centery=SCREEN_HEIGHT // 2 + 40),
+        )

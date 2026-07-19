@@ -21,8 +21,8 @@ def _make_sound(
     """
     parts = []
     for freq, duration in freq_envelope:
-        n      = int(_SAMPLE_RATE * duration)
-        t      = np.linspace(0, duration, n, endpoint=False)
+        n = int(_SAMPLE_RATE * duration)
+        t = np.linspace(0, duration, n, endpoint=False)
 
         # Формирование волны выбранного типа
         if wave == "square":
@@ -34,12 +34,12 @@ def _make_sound(
 
         # Короткое затухание в конце сегмента — убирает щелчок
         fade = np.linspace(1, 0, min(n, _SAMPLE_RATE // 20))
-        chunk[-len(fade):] *= fade
+        chunk[-len(fade) :] *= fade
         parts.append(chunk)
 
     # Объединяем сегменты, масштабируем к int16 и делаем стерео
-    arr    = np.concatenate(parts)
-    arr    = (arr * volume * 32767).astype(np.int16)
+    arr = np.concatenate(parts)
+    arr = (arr * volume * 32767).astype(np.int16)
     stereo = np.column_stack([arr, arr])
     return pygame.sndarray.make_sound(stereo)
 
@@ -63,7 +63,9 @@ def load_sounds() -> dict[str, pygame.mixer.Sound]:
         ),
         # Маршевый ритм (не используется активно, точка расширения)
         "march": _make_sound(
-            [(160, 0.06), (130, 0.06), (110, 0.06), (90, 0.06)], volume=0.20, wave="square"
+            [(160, 0.06), (130, 0.06), (110, 0.06), (90, 0.06)],
+            volume=0.20,
+            wave="square",
         ),
         # Джингл победы: восходящий аккорд синусоидой
         "victory": _make_sound(

@@ -9,12 +9,12 @@ import random
 import sys
 import pygame
 
-from settings         import SCREEN_WIDTH, SCREEN_HEIGHT, TITLE
+from settings import SCREEN_WIDTH, SCREEN_HEIGHT, TITLE
 from core.sprite_loader import load_assets
-from core.sounds        import load_sounds
-from core.game          import Game
-from core.leaderboard   import save_record, get_top
-from ui.menu            import MainMenu, DifficultyMenu, NameInputScreen, LeaderboardScreen
+from core.sounds import load_sounds
+from core.game import Game
+from core.leaderboard import save_record, get_top
+from ui.menu import MainMenu, DifficultyMenu, NameInputScreen, LeaderboardScreen
 
 
 def _make_stars(count: int = 120) -> list[tuple[int, int, int]]:
@@ -37,10 +37,10 @@ def main() -> None:
     # Ресурсы загружаются один раз и передаются во все экраны
     assets = load_assets()
     sounds = load_sounds()
-    stars  = _make_stars()
+    stars = _make_stars()
 
     while True:
-        # Главное меню 
+        # Главное меню
         action = MainMenu(screen, stars).run()
 
         if action == "quit":
@@ -49,18 +49,18 @@ def main() -> None:
 
         if action == "leaderboard":
             LeaderboardScreen(screen, stars, get_top(10)).run()
-            continue   # вернуться в главное меню
+            continue  # вернуться в главное меню
 
         # action == "play" → выбор сложности
         diff = DifficultyMenu(screen, stars).run()
         if diff == "back":
-            continue   # вернуться в главное меню
+            continue  # вернуться в главное меню
 
-        #Игровой цикл 
+        # Игровой цикл
         # Game.run() блокирует и возвращает финальный счёт
         score = Game(screen, assets, sounds, stars, difficulty=diff).run()
 
-        # Ввод имени и сохранение рекорда 
+        # Ввод имени и сохранение рекорда
         name = NameInputScreen(screen, stars, score).run()
         if name:
             save_record(name, diff, score)

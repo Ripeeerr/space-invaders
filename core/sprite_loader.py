@@ -41,15 +41,13 @@ def load_assets() -> dict:
     assets["explosions"] = [_load(p) for p in ASSET_PATHS["explosions"]]
 
     # Иконки жизней
-    assets["hearts"] = {
-        key: _load(path)
-        for key, path in ASSET_PATHS["hearts"].items()
-    }
+    assets["hearts"] = {key: _load(path) for key, path in ASSET_PATHS["hearts"].items()}
 
     return assets
 
 
 # Вспомогательные функции
+
 
 def _load(path: str | Path) -> pygame.Surface:
     """
@@ -66,6 +64,6 @@ def _scale(surf: pygame.Surface, scale: float) -> pygame.Surface:
     """
     if scale == 1.0:
         return surf
-    w = max(1, int(surf.get_width()  * scale))
+    w = max(1, int(surf.get_width() * scale))
     h = max(1, int(surf.get_height() * scale))
     return pygame.transform.scale(surf, (w, h))

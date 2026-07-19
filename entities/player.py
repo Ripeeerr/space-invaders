@@ -6,10 +6,13 @@
 import pygame
 from settings import (
     SCREEN_WIDTH,
-    PLAYER_SPEED, PLAYER_LIVES,
-    PLAYER_SHOOT_DELAY, PLAYER_SCALE,
+    PLAYER_SPEED,
+    PLAYER_LIVES,
+    PLAYER_SHOOT_DELAY,
+    PLAYER_SCALE,
     PLAYER_HITBOX_SHRINK,
-    PLAYER_BLINK_TIME, PLAYER_BLINK_RATE,
+    PLAYER_BLINK_TIME,
+    PLAYER_BLINK_RATE,
 )
 from entities.bullet import PlayerBullet
 
@@ -32,7 +35,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         # Масштабируем спрайт и сохраняем эталон
-        w = max(1, int(sprite.get_width()  * PLAYER_SCALE))
+        w = max(1, int(sprite.get_width() * PLAYER_SCALE))
         h = max(1, int(sprite.get_height() * PLAYER_SCALE))
         self._base_image = pygame.transform.scale(sprite, (w, h))
         self.image = self._base_image.copy()
@@ -57,15 +60,15 @@ class Player(pygame.sprite.Sprite):
         self._shoot_cooldown = 0.0
 
         # Состояние неуязвимости и мигания
-        self._invincible  = False
-        self._inv_timer   = 0.0
+        self._invincible = False
+        self._inv_timer = 0.0
         self._blink_timer = 0.0
-        self._visible     = True
+        self._visible = True
 
-        self._all_sprites   = all_sprites
+        self._all_sprites = all_sprites
         self._bullets_group = bullets_group
 
-    # Свойства 
+    # Свойства
 
     @property
     def lives(self) -> int:
@@ -79,7 +82,7 @@ class Player(pygame.sprite.Sprite):
     def alive_and_vulnerable(self) -> bool:
         return not self._invincible
 
-    # Публичные методы 
+    # Публичные методы
 
     def add_score(self, points: int) -> None:
         self._score += points
@@ -89,11 +92,11 @@ class Player(pygame.sprite.Sprite):
         if self._invincible:
             return
         self._lives -= 1
-        self._invincible  = True
-        self._inv_timer   = 0.0
+        self._invincible = True
+        self._inv_timer = 0.0
         self._blink_timer = 0.0
 
-    #Обновление каждый кадр 
+    # Обновление каждый кадр
 
     def update(self, dt: float, **_) -> None:
         keys = pygame.key.get_pressed()
@@ -134,7 +137,7 @@ class Player(pygame.sprite.Sprite):
             self.image = self._base_image
             return
 
-        self._inv_timer   += dt
+        self._inv_timer += dt
         self._blink_timer += dt
 
         if self._blink_timer >= PLAYER_BLINK_RATE:
@@ -150,10 +153,10 @@ class Player(pygame.sprite.Sprite):
 
         if self._inv_timer >= PLAYER_BLINK_TIME:
             self._invincible = False
-            self._visible    = True
-            self.image       = self._base_image
+            self._visible = True
+            self.image = self._base_image
 
-    #Отрисовка
+    # Отрисовка
 
     def draw_hitbox(self, surface: pygame.Surface) -> None:
         """Отладочный метод: рисует хитбокс красным контуром."""

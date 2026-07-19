@@ -4,8 +4,12 @@ HUD (heads-up display): счёт, жизни и оверлеи финальны�
 
 import pygame
 from settings import (
-    SCREEN_WIDTH, SCREEN_HEIGHT,
-    WHITE, YELLOW, RED, GREEN,
+    SCREEN_WIDTH,
+    SCREEN_HEIGHT,
+    WHITE,
+    YELLOW,
+    RED,
+    GREEN,
     PLAYER_LIVES,
 )
 
@@ -17,16 +21,16 @@ class HUD:
     — полупрозрачный оверлей при Game Over и Victory.
     """
 
-    _FONT_LARGE  = 28
-    _FONT_SMALL  = 20
-    _MARGIN      = 10
+    _FONT_LARGE = 28
+    _FONT_SMALL = 20
+    _MARGIN = 10
     _HEART_SCALE = 0.40  # масштаб иконки жизни
 
     def __init__(
         self,
         heart_empty: pygame.Surface,
-        heart_half:  pygame.Surface,
-        heart_full:  pygame.Surface,
+        heart_half: pygame.Surface,
+        heart_full: pygame.Surface,
     ) -> None:
         # Шрифты создаются один раз в конструкторе
         self._font_large = pygame.font.SysFont("monospace", self._FONT_LARGE, bold=True)
@@ -34,8 +38,8 @@ class HUD:
 
         # Масштабируем иконки жизней один раз при инициализации
         self._hearts = {
-            "full":  self._scale(heart_full),
-            "half":  self._scale(heart_half),
+            "full": self._scale(heart_full),
+            "half": self._scale(heart_half),
             "empty": self._scale(heart_empty),
         }
 
@@ -58,13 +62,17 @@ class HUD:
 
     def draw_game_over(self, surface: pygame.Surface, score: int) -> None:
         self._draw_overlay(
-            surface, title="GAME  OVER", title_colour=RED,
+            surface,
+            title="GAME  OVER",
+            title_colour=RED,
             lines=[f"Финальный счёт: {score:06d}", "", "R — рестарт", "Q — выход"],
         )
 
     def draw_victory(self, surface: pygame.Surface, score: int) -> None:
         self._draw_overlay(
-            surface, title="ВЫ  ПОБЕДИЛИ!", title_colour=GREEN,
+            surface,
+            title="ВЫ  ПОБЕДИЛИ!",
+            title_colour=GREEN,
             lines=[f"Финальный счёт: {score:06d}", "", "R — сыграть ещё", "Q — выход"],
         )
 
@@ -100,6 +108,6 @@ class HUD:
             )
 
     def _scale(self, surf: pygame.Surface) -> pygame.Surface:
-        w = max(1, int(surf.get_width()  * self._HEART_SCALE))
+        w = max(1, int(surf.get_width() * self._HEART_SCALE))
         h = max(1, int(surf.get_height() * self._HEART_SCALE))
         return pygame.transform.scale(surf, (w, h))

@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 
 _RECORDS_FILE = Path("records.json")
-_MAX_RECORDS  = 100   # максимальное число хранимых записей
+_MAX_RECORDS = 100  # максимальное число хранимых записей
 
 
 def load_records() -> list[dict]:
@@ -45,7 +45,7 @@ def save_record(name: str, difficulty: str, score: int) -> None:
 
     # Ищем существующую запись по имени (без учёта регистра)
     name_lower = name.strip().lower()
-    existing   = next(
+    existing = next(
         (r for r in records if r["name"].lower() == name_lower),
         None,
     )
@@ -55,7 +55,7 @@ def save_record(name: str, difficulty: str, score: int) -> None:
         records.append({"name": name.strip(), "difficulty": difficulty, "score": score})
     elif score > existing["score"]:
         # Тот же игрок, новый рекорд — обновляем
-        existing["score"]      = score
+        existing["score"] = score
         existing["difficulty"] = difficulty
 
     # Сортируем по убыванию счёта и обрезаем лишнее

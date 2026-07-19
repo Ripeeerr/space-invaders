@@ -8,7 +8,9 @@ import pygame
 
 from settings import (
     EXPLOSION_DURATION,
-    HIT_PARTICLE_COUNT, HIT_PARTICLE_SPEED, HIT_PARTICLE_LIFE,
+    HIT_PARTICLE_COUNT,
+    HIT_PARTICLE_SPEED,
+    HIT_PARTICLE_LIFE,
 )
 
 
@@ -33,18 +35,20 @@ class Explosion(pygame.sprite.Sprite):
             self._frames = [
                 pygame.transform.scale(
                     f,
-                    (max(1, int(f.get_width()  * scale)),
-                     max(1, int(f.get_height() * scale)))
+                    (
+                        max(1, int(f.get_width() * scale)),
+                        max(1, int(f.get_height() * scale)),
+                    ),
                 )
                 for f in frames
             ]
         else:
             self._frames = list(frames)
 
-        self._timer     = 0.0
+        self._timer = 0.0
         self._frame_idx = 0
         self.image = self._frames[0]
-        self.rect  = self.image.get_rect(center=(cx, cy))
+        self.rect = self.image.get_rect(center=(cx, cy))
 
     def update(self, dt: float, **_) -> None:
         self._timer += dt
@@ -55,7 +59,7 @@ class Explosion(pygame.sprite.Sprite):
             len(self._frames) - 1,
         )
         self.image = self._frames[self._frame_idx]
-        self.rect  = self.image.get_rect(center=self.rect.center)
+        self.rect = self.image.get_rect(center=self.rect.center)
 
         # Когда все кадры отыграли — удаляем спрайт
         if self._timer >= EXPLOSION_DURATION * len(self._frames):
@@ -72,17 +76,17 @@ class Particle(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((4, 4), pygame.SRCALPHA)
         self.image.fill(colour)
-        self.rect  = self.image.get_rect(center=(cx, cy))
+        self.rect = self.image.get_rect(center=(cx, cy))
 
         # Случайный угол и скорость разлёта
         angle = random.uniform(0, math.tau)
         speed = random.uniform(HIT_PARTICLE_SPEED * 0.5, HIT_PARTICLE_SPEED)
-        self._vx     = math.cos(angle) * speed
-        self._vy     = math.sin(angle) * speed
-        self._x      = float(cx)
-        self._y      = float(cy)
-        self._life   = HIT_PARTICLE_LIFE
-        self._age    = 0.0
+        self._vx = math.cos(angle) * speed
+        self._vy = math.sin(angle) * speed
+        self._x = float(cx)
+        self._y = float(cy)
+        self._life = HIT_PARTICLE_LIFE
+        self._age = 0.0
         self._colour = colour
 
     def update(self, dt: float, **_) -> None:

@@ -10,8 +10,8 @@ from __future__ import annotations
 import pygame
 from settings import SCREEN_WIDTH, DARK_PURPLE, WHITE, YELLOW, RED, GREEN, CYAN
 
+# Вспомогательный класс кнопки
 
-#Вспомогательный класс кнопки
 
 class _Button:
     """Простая текстовая кнопка с подсветкой при наведении."""
@@ -19,19 +19,19 @@ class _Button:
     _FONT_SIZE = 32
 
     def __init__(self, text: str, centerx: int, centery: int) -> None:
-        self._text   = text
-        self._font   = pygame.font.SysFont("monospace", self._FONT_SIZE, bold=True)
-        self._rect   = pygame.Rect(0, 0, 340, 52)
+        self._text = text
+        self._font = pygame.font.SysFont("monospace", self._FONT_SIZE, bold=True)
+        self._rect = pygame.Rect(0, 0, 340, 52)
         self._rect.center = (centerx, centery)
 
     def draw(self, surface: pygame.Surface) -> None:
         hovered = self._rect.collidepoint(pygame.mouse.get_pos())
-        colour  = YELLOW if hovered else WHITE
+        colour = YELLOW if hovered else WHITE
 
         # Фоновый прямоугольник кнопки
         bg_colour = (50, 50, 80) if hovered else (25, 25, 50)
-        pygame.draw.rect(surface, bg_colour,   self._rect, border_radius=8)
-        pygame.draw.rect(surface, colour,      self._rect, width=2, border_radius=8)
+        pygame.draw.rect(surface, bg_colour, self._rect, border_radius=8)
+        pygame.draw.rect(surface, colour, self._rect, width=2, border_radius=8)
 
         label = self._font.render(self._text, True, colour)
         surface.blit(label, label.get_rect(center=self._rect.center))
@@ -45,7 +45,8 @@ class _Button:
         )
 
 
-#  Главное меню 
+#  Главное меню
+
 
 class MainMenu:
     """
@@ -58,16 +59,16 @@ class MainMenu:
 
     def __init__(self, screen: pygame.Surface, stars: list) -> None:
         self._screen = screen
-        self._stars  = stars
-        self._clock  = pygame.time.Clock()
+        self._stars = stars
+        self._clock = pygame.time.Clock()
 
         cx = SCREEN_WIDTH // 2
-        self._btn_play   = _Button("ИГРАТЬ",        cx, 320)
-        self._btn_leader = _Button("РЕКОРДЫ",      cx, 390)
-        self._btn_quit   = _Button("ВЫХОД",          cx, 460)
+        self._btn_play = _Button("ИГРАТЬ", cx, 320)
+        self._btn_leader = _Button("РЕКОРДЫ", cx, 390)
+        self._btn_quit = _Button("ВЫХОД", cx, 460)
 
         self._font_title = pygame.font.SysFont("monospace", 64, bold=True)
-        self._font_sub   = pygame.font.SysFont("monospace", 20)
+        self._font_sub = pygame.font.SysFont("monospace", 20)
 
     def run(self) -> str:
         while True:
@@ -103,7 +104,8 @@ class MainMenu:
         pygame.display.flip()
 
 
-#Выбор сложности 
+# Выбор сложности
+
 
 class DifficultyMenu:
     """
@@ -113,21 +115,21 @@ class DifficultyMenu:
 
     def __init__(self, screen: pygame.Surface, stars: list) -> None:
         self._screen = screen
-        self._stars  = stars
-        self._clock  = pygame.time.Clock()
+        self._stars = stars
+        self._clock = pygame.time.Clock()
 
         cx = SCREEN_WIDTH // 2
-        self._btn_easy   = _Button("ЛЕГКО",   cx, 310)
-        self._btn_medium = _Button("СРЕДНЕ",  cx, 390)
+        self._btn_easy = _Button("ЛЕГКО", cx, 310)
+        self._btn_medium = _Button("СРЕДНЕ", cx, 390)
         self._btn_expert = _Button("ЭКСПЕРТ", cx, 470)
-        self._btn_back   = _Button("← НАЗАД",    cx, 570)
+        self._btn_back = _Button("← НАЗАД", cx, 570)
 
         self._font_title = pygame.font.SysFont("monospace", 48, bold=True)
-        self._font_desc  = pygame.font.SysFont("monospace", 17)
+        self._font_desc = pygame.font.SysFont("monospace", 17)
 
         # Описания сложностей (отображаются под кнопками)
         self._descriptions = {
-            "easy":   "3 пули, длинные паузы между выстрелами",
+            "easy": "3 пули, длинные паузы между выстрелами",
             "medium": "5 пуль, средние паузы",
             "expert": "8 пуль, короткие паузы, быстрее движение",
         }
@@ -152,9 +154,11 @@ class DifficultyMenu:
 
     def _get_hovered(self) -> str | None:
         pos = pygame.mouse.get_pos()
-        for key, btn in [("easy", self._btn_easy),
-                         ("medium", self._btn_medium),
-                         ("expert", self._btn_expert)]:
+        for key, btn in [
+            ("easy", self._btn_easy),
+            ("medium", self._btn_medium),
+            ("expert", self._btn_expert),
+        ]:
             if btn._rect.collidepoint(pos):
                 return key
         return None
@@ -175,12 +179,15 @@ class DifficultyMenu:
         # Подсказка при наведении
         if self._hovered and self._hovered in self._descriptions:
             desc = self._font_desc.render(self._descriptions[self._hovered], True, CYAN)
-            self._screen.blit(desc, desc.get_rect(centerx=SCREEN_WIDTH // 2, centery=530))
+            self._screen.blit(
+                desc, desc.get_rect(centerx=SCREEN_WIDTH // 2, centery=530)
+            )
 
         pygame.display.flip()
 
 
 # Ввод имени после поражения
+
 
 class NameInputScreen:
     """
@@ -193,23 +200,23 @@ class NameInputScreen:
 
     def __init__(self, screen: pygame.Surface, stars: list, score: int) -> None:
         self._screen = screen
-        self._stars  = stars
-        self._score  = score
-        self._clock  = pygame.time.Clock()
-        self._name   = ""
+        self._stars = stars
+        self._score = score
+        self._clock = pygame.time.Clock()
+        self._name = ""
 
         self._font_title = pygame.font.SysFont("monospace", 44, bold=True)
         self._font_score = pygame.font.SysFont("monospace", 28)
         self._font_label = pygame.font.SysFont("monospace", 22)
         self._font_input = pygame.font.SysFont("monospace", 34, bold=True)
-        self._font_hint  = pygame.font.SysFont("monospace", 18)
+        self._font_hint = pygame.font.SysFont("monospace", 18)
 
         # Поле ввода
         self._input_rect = pygame.Rect(0, 0, 380, 52)
         self._input_rect.center = (SCREEN_WIDTH // 2, 430)
 
         self._cursor_timer = 0.0
-        self._cursor_show  = True
+        self._cursor_show = True
 
     def run(self) -> str:
         while True:
@@ -217,7 +224,7 @@ class NameInputScreen:
             self._cursor_timer += dt
             if self._cursor_timer >= 0.5:
                 self._cursor_timer = 0.0
-                self._cursor_show  = not self._cursor_show
+                self._cursor_show = not self._cursor_show
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -249,24 +256,29 @@ class NameInputScreen:
         score_surf = self._font_score.render(f"Счёт:  {self._score:06d}", True, YELLOW)
         self._screen.blit(score_surf, score_surf.get_rect(centerx=cx, centery=240))
 
-        label = self._font_label.render("Введи своё имя для таблицы рекордов:", True, WHITE)
+        label = self._font_label.render(
+            "Введи своё имя для таблицы рекордов:", True, WHITE
+        )
         self._screen.blit(label, label.get_rect(centerx=cx, centery=340))
 
         # Поле ввода
-        pygame.draw.rect(self._screen, (40, 40, 70),    self._input_rect, border_radius=8)
-        pygame.draw.rect(self._screen, CYAN,             self._input_rect, width=2, border_radius=8)
+        pygame.draw.rect(self._screen, (40, 40, 70), self._input_rect, border_radius=8)
+        pygame.draw.rect(self._screen, CYAN, self._input_rect, width=2, border_radius=8)
 
         display_text = self._name + ("|" if self._cursor_show else " ")
         inp_surf = self._font_input.render(display_text, True, WHITE)
         self._screen.blit(inp_surf, inp_surf.get_rect(center=self._input_rect.center))
 
-        hint = self._font_hint.render("Enter — сохранить   Esc — пропустить", True, (150, 150, 180))
+        hint = self._font_hint.render(
+            "Enter — сохранить   Esc — пропустить", True, (150, 150, 180)
+        )
         self._screen.blit(hint, hint.get_rect(centerx=cx, centery=500))
 
         pygame.display.flip()
 
 
 # Таблица рекордов
+
 
 class LeaderboardScreen:
     """
@@ -278,27 +290,27 @@ class LeaderboardScreen:
         self,
         screen: pygame.Surface,
         stars: list,
-        records: list[tuple[str, str, int]],   # [(name, difficulty, score), ...]
+        records: list[tuple[str, str, int]],  # [(name, difficulty, score), ...]
     ) -> None:
-        self._screen  = screen
-        self._stars   = stars
+        self._screen = screen
+        self._stars = stars
         self._records = records
-        self._clock   = pygame.time.Clock()
+        self._clock = pygame.time.Clock()
 
         cx = SCREEN_WIDTH // 2
         self._btn_back = _Button("←  НАЗАД", cx, 630)
 
-        self._font_title  = pygame.font.SysFont("monospace", 44, bold=True)
+        self._font_title = pygame.font.SysFont("monospace", 44, bold=True)
         self._font_header = pygame.font.SysFont("monospace", 18, bold=True)
-        self._font_row    = pygame.font.SysFont("monospace", 20)
+        self._font_row = pygame.font.SysFont("monospace", 20)
 
         self._diff_colours = {
-            "easy":   GREEN,
+            "easy": GREEN,
             "medium": YELLOW,
             "expert": RED,
         }
         self._diff_labels = {
-            "easy":   "ЛЕГКО",
+            "easy": "ЛЕГКО",
             "medium": "СРЕДНЕ",
             "expert": "ЭКСПЕРТ",
         }
@@ -309,7 +321,10 @@ class LeaderboardScreen:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
-                if event.type == pygame.KEYDOWN and event.key in (pygame.K_ESCAPE, pygame.K_RETURN):
+                if event.type == pygame.KEYDOWN and event.key in (
+                    pygame.K_ESCAPE,
+                    pygame.K_RETURN,
+                ):
                     return
                 if self._btn_back.is_clicked(event):
                     return
@@ -332,11 +347,13 @@ class LeaderboardScreen:
             self._screen.blit(h, h.get_rect(centerx=x, centery=130))
 
         # Разделитель
-        pygame.draw.line(self._screen, (80, 80, 120), (40, 148), (SCREEN_WIDTH - 40, 148), 1)
+        pygame.draw.line(
+            self._screen, (80, 80, 120), (40, 148), (SCREEN_WIDTH - 40, 148), 1
+        )
 
         # Строки таблицы (максимум 10)
         for i, (name, diff, score) in enumerate(self._records[:10]):
-            y    = 165 + i * 42
+            y = 165 + i * 42
             rank_colour = (255, 215, 0) if i == 0 else (200, 200, 200)
 
             rank = self._font_row.render(f"{i + 1}.", True, rank_colour)
@@ -345,7 +362,7 @@ class LeaderboardScreen:
             nm = self._font_row.render(name[:16], True, WHITE)
             self._screen.blit(nm, nm.get_rect(centerx=230, centery=y))
 
-            diff_label  = self._diff_labels.get(diff, diff)
+            diff_label = self._diff_labels.get(diff, diff)
             diff_colour = self._diff_colours.get(diff, WHITE)
             dif = self._font_row.render(diff_label, True, diff_colour)
             self._screen.blit(dif, dif.get_rect(centerx=460, centery=y))
@@ -354,7 +371,9 @@ class LeaderboardScreen:
             self._screen.blit(sc, sc.get_rect(centerx=640, centery=y))
 
         if not self._records:
-            empty = self._font_row.render("Рекордов пока нет. Сыграй первым!", True, (150, 150, 180))
+            empty = self._font_row.render(
+                "Рекордов пока нет. Сыграй первым!", True, (150, 150, 180)
+            )
             self._screen.blit(empty, empty.get_rect(centerx=cx, centery=300))
 
         self._btn_back.draw(self._screen)
