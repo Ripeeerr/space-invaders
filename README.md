@@ -43,7 +43,7 @@ Space Invaders — десктопная 2D-игра в жанре фиксиро
 
 ```bash
 # 1. Клонировать репозиторий
-git clone https://github.com/ВАШ_ЛОГИН/space-invaders.git
+git clone https://github.com/ripeeerr/space-invaders.git
 cd space-invaders
 
 # 2. Установить зависимости
